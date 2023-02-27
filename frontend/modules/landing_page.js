@@ -20,7 +20,7 @@ async function fetchCities() {
 
 
   
-  const d =  (fetch("http://13.127.91.86:8082/cities").then((res)=>res.json()).then(d=>d).catch(e => null))
+  const d =  (fetch("http://43.204.249.25:8082/cities").then((res)=>res.json()).then(d=>d).catch(e => null))
   // Promise.reject(new Error(null))
   return (d) ;
 }
@@ -39,7 +39,7 @@ function addCityToDOM(id, city, description, image) {
   textDiv.classList.add("tile-text","text-center");
 
   let anchor = document.createElement("a");
-  anchor.setAttribute("href","/pages/adventures/?city="+id);
+  anchor.setAttribute("href","/frontend/pages/adventures/?city="+id);
   anchor.setAttribute("id",id)
 
   let head = document.createElement("h5");

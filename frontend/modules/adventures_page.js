@@ -5,6 +5,11 @@ import config from "../conf/index.js";
 function getCityFromURL(search) {
   // TODO: MODULE_ADVENTURES
   // 1. Extract the city id from the URL's Query Param and return it
+  return search.split("=")[1]
+
+
+  // let params = URLSearchParams(search);
+  // return params.get('city')
 
 }
 
@@ -12,14 +17,67 @@ function getCityFromURL(search) {
 async function fetchAdventures(city) {
   // TODO: MODULE_ADVENTURES
   // 1. Fetch adventures using the Backend API and return the data
-
-}
+  const url = `${config.backendEndpoint}/adventures?city=${city}`;
+  return fetch(url).then((res)=>res.json()).then(d=>d).catch(e=>null)
+  }
 
 //Implementation of DOM manipulation to add adventures for the given city from list of adventures
 function addAdventureToDOM(adventures) {
   // TODO: MODULE_ADVENTURES
   // 1. Populate the Adventure Cards and insert those details into the DOM
+  let parent = document.getElementById("data");
+  
+  for (let adventure of adventures){
+  
+  
+  let cardDiv= document.createElement("div");
+  cardDiv.classList.add("col-12","col-sm-6","col-lg-3","mb-4");
 
+  let anchor = document.createElement("a");
+  anchor.href= `/frontend/detail/?adventure=${adventure.id}`;
+  anchor.setAttribute("id",adventure.id)
+
+  let adDiv = document.createElement("div");
+  adDiv.classList.add("activity-card", "card");
+
+  let cate = document.createElement("p");
+  cate.className = "category-banner";
+  cate.textContent = adventure.category;
+
+  let imge = document.createElement("img");
+  imge.src= adventure.image;
+  imge.classList.add("card-img-top");
+  
+  let cardBodyDiv = document.createElement("div");
+  cardBodyDiv.classList.add("card-body","text-center","d-md-flex","justify-content-between");
+
+  let leftDiv= document.createElement("div");
+  let li1 = document.createElement("p");
+  let li2 = document.createElement("p");
+  li1.textContent = adventure.name;
+  li2.textContent = "Duration";
+  leftDiv.style.float = "left";
+  leftDiv.style.display = "inline";
+  leftDiv.append(li1,li2);
+
+  let rightDiv = document.createElement("div");
+  let li3 = document.createElement("p");
+  let li4 = document.createElement("p");
+  li3.textContent =  adventure.costPerHead;
+  li4.textContent = adventure.duration +"Hours";
+  rightDiv.style.float = "right";
+  rightDiv.style.display = "inline";
+  rightDiv.append(li3,li4);
+  cardBodyDiv.append(leftDiv,rightDiv);
+
+  adDiv.append(imge,cate,cardBodyDiv);
+  anchor.append(adDiv);
+  cardDiv.append(anchor);
+
+  parent.append(cardDiv);
+  }
+  console.log(parent.innerHTML)
+  
 }
 
 //Implementation of filtering by duration which takes in a list of adventures, the lower bound and upper bound of duration and returns a filtered list of adventures.
