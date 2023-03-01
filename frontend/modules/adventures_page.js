@@ -21,8 +21,9 @@ async function fetchAdventures(city) {
 function addAdventureToDOM(adventures) {
   // TODO: MODULE_ADVENTURES
   // 1. Populate the Adventure Cards and insert those details into the DOM
+  // debugger;
   let parent = document.getElementById("data");
-
+  console.log(parent.innerHTML)
   for (let a of adventures) {
     let parentDiv = document.createElement("div");
     parentDiv.classList.add("col-12", "col-lg-3", "col-sm-6", "mb-4");
@@ -79,12 +80,22 @@ function addAdventureToDOM(adventures) {
     parentDiv.append(anchor);
     parent.append(parentDiv);
   }
+  console.log(parent.innerHTML)
 }
 
 //Implementation of filtering by duration which takes in a list of adventures, the lower bound and upper bound of duration and returns a filtered list of adventures.
 function filterByDuration(list, low, high) {
   // TODO: MODULE_FILTERS
   // 1. Filter adventures based on Duration and return filtered list
+  let filteredList = [];
+  list.filter((l,i,lis)=>{
+    if((l.duration<= high)&&(l.duration>=low)){
+      filteredList.push(l);
+    }
+
+
+  })
+  return filteredList;
 
 }
 
@@ -118,28 +129,55 @@ function filterFunction(list, filters) {
   // 1. Handle the 3 cases detailed in the comments above and return the filtered list of adventures
   // 2. Depending on which filters are needed, invoke the filterByDuration() and/or filterByCategory() methods
   let filteredList = [];
+  let filteredList1 = [];
+  let filteredList2= [];
   let categoryList = filters.category;
-  let durationList = filters.duration
+  let durationList = filters.duration;
+
+  //new
+  let low = 0;
+  let high =99;
+  if(durationList.includes("-")){
+    low = durationList.split("-")[0];
+    high = durationList.split("-")[1];
+  }else{
+    low = durationList.split("+")[0];
+  }
+
+  //////////
   if(String(filters["duration"]).length>0 && filters["category"].length>0){
-    filteredList.push(filterByCategory(list,filters.category));
-    filteredList.push(filterByDuration(list,filters.duration));
+    filteredList1 = (filterByCategory(list,filters.category));
+    filteredList = (filterByDuration(filteredList1,low,high));
+    // filteredList = filteredList1.concat(filteredList2);
+    // for(let f of filteredList1){
+    //   for(let f2 of filteredList2){
+    //   if(f2.id === f.id)
+    //   filteredList.push(f);
+    //   }
+    // }
+    
   }
   else if(String(filters["duration"]).length>0){
-    filteredList.push(filterByDuration(list,filters.duration));
+    filteredList = (filterByDuration(list,low,high));//originally push()
 
   } else if(filters["category"].length>0){
-    filteredList.push(filterByCategory(list,filters.category));
+    filteredList = (filterByCategory(list,filters.category));
   }
-  list = filteredList;
+  //new
+  else if (String(filters["duration"]).length===0 && filters["category"].length===0){
+    return list;
+  }
+  // list = filteredList; my step
   // Place holder for functionality to work in the Stubs
-  return list;
+  // return list; ******************default step****************
+  return filteredList;
 }
 
 //Implementation of localStorage API to save filters to local storage. This should get called everytime an onChange() happens in either of filter dropdowns
 function saveFiltersToLocalStorage(filters) {
   // TODO: MODULE_FILTERS
   // 1. Store the filters as a String to localStorage
-
+  localStorage.setItem("filters",JSON.stringify(filters));
   return true;
 }
 
@@ -148,7 +186,7 @@ function getFiltersFromLocalStorage() {
   // TODO: MODULE_FILTERS
   // 1. Get the filters from localStorage and return String read as an object
 
-
+  return JSON.parse(localStorage.getItem("filters"));
   // Place holder for functionality to work in the Stubs
   return null;
 }
@@ -160,12 +198,12 @@ function getFiltersFromLocalStorage() {
 function generateFilterPillsAndUpdateDOM(filters) {
   // TODO: MODULE_FILTERS
   // 1. Use the filters given as input, update the Duration Filter value and Generate Category Pills
-  let parentDiv1 = document.getElementById("category-selection");
+  let parentDiv1 = document.getElementById("category-list");
   for(let c of filters.category){
     let spanDiv = document.createElement("span");
     spanDiv.textContent = String(c);
     spanDiv.className = "category-filter";
-    spanDiv.setAttribute("id","category-list");
+    
 
     parentDiv1.append(spanDiv);
     
