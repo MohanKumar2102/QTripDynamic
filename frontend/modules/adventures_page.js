@@ -13,7 +13,7 @@ function getCityFromURL(search) {
 async function fetchAdventures(city) {
   // TODO: MODULE_ADVENTURES
   // 1. Fetch adventures using the Backend API and return the data
-  return fetch(`${config.backendEndpoint}/adventures/?city=${city}`).then(res=>res.json()).then(d=>d).catch(e=>null);
+  return fetch(config.backendEndpoint+`/adventures/?city=${city}`).then(res=>res.json()).then(d=>d).catch(e=>null);
 
 }
 
